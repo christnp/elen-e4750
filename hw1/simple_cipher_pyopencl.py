@@ -10,8 +10,8 @@ Usage: Default input is 'Nick Christman.' Follow the script file name with a str
 
 #---------- MAIN CODE ------------
 # Import libraries
-import string; # ASCII characters
-import sys;	# Input arguments
+import string # ASCII characters
+import sys	# Input arguments
 import time
  
 import pyopencl as cl
@@ -19,16 +19,25 @@ import numpy as np
  
 # Boilerplate PyOpenCL init
 # Select the desired OpenCL platform
-NAME = 'NVIDIA CUDA'
-platforms = cl.get_platforms()
-devs = None
-for platform in platforms:
-    if platform.name == NAME:
-        devs = platform.get_devices()
+NAME = 'NVIDIA CUDA';
+platforms = cl.get_platforms();
 
+devs = None;
+platform_num = 0;
+for platform in platforms:
+	platform_num = platform_num + 1;	
+	if platform.name == NAME:
+		print "(",platform_num,") ", platform.name,"-",platform.version;
+		devs = platform.get_devices();
+
+if(devs == None):
+	print "The last called platform will be used instead: ", platform.name,"-",platform.version;
+	devs = platform.get_devices();
+	
 # Set up a command queue:
 ctx = cl.Context(devs)
 queue = cl.CommandQueue(ctx)
+
 
 # Define the OpenCL kernel you wish to run; most of the interesting stuff you
 # will be doing involves modifying or writing kernels:
@@ -38,7 +47,8 @@ __kernel void func(__global float* a, __global float* b, __global float* c) {
     c[i] = a[i]+b[i];
 }
 """
-	
+
+"""
 # Input string
 input_arg_len = len(sys.argv);
 if input_arg_len > 1: # first argument is the python script
@@ -86,4 +96,4 @@ output = ' '.join(output_array);
 
 print "\n******************** MAIN OUTPUT ********************"
 print "Ciphered input string: ", output;
-		
+"""		
